@@ -80,10 +80,10 @@
     - import_role:
         name: ceph-handler
     - import_role:
+        name: ceph-common
+    - import_role:
         name: ceph-config
       tags: ['ceph_update_config']
-    - import_role:
-        name: ceph-common
     - import_role:
         name: ceph-nfs
 
