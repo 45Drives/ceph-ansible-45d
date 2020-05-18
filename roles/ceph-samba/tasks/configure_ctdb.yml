@@ -84,3 +84,12 @@
   when:
     - domain_member | bool
 
+- name: config_samba | Create samba ctdb event options
+  copy:
+    dest: /etc/ctdb/events/legacy/{{ item }}
+    content: |
+      CTDB_SAMBA_SKIP_SHARE_CHECK=yes
+  with_items:
+    - 50.samba.options
+  when:
+    - samba_cephfs_module | bool

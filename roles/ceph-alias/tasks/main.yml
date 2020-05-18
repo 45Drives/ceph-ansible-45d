@@ -1,30 +1,24 @@
 ---
-- name: create tools directory
-  file:
-    path: "{{ tools_install_dir }}"
-    state: directory
-
-- name: install ipmitool
-  package:
-    name: "{{ item }}"
+- name: 45Drives Repository - Configure 45drives repository
+  yum_repository:
+    name: ceph_45drives
+    description: 45Drives $basearch repo
+    gpgcheck: no
+    enabled: yes
     state: present
-  with_items:
-    - ipmitool
-    - pciutils
+    baseurl: "{{ ceph_45drives_repo_url }}"
+    file: ceph_45drives
+    priority: "1"
+  register: result
+  until: result is success
 
-- name: download tools release
-  unarchive:
-    src: https://github.com/45Drives/tools/archive/v0.1.tar.gz
-    dest: /opt/
-    remote_src: yes
+- name: install samba
+  package:
+    name: 45drives-tools
+    state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
+  register: result
+  until: result is succeeded
 
-- name: link tools to correct path
-  file:
-    src: "/opt/tools-{{ tools_version }}"
-    dest: "{{ tools_install_dir }}"
-    state: link
-    force: true 
-    
 - name: Install alias udev rules
   command: sh "{{ tools_install_dir }}"/alias_setup.sh
 

@@ -2,6 +2,7 @@
 - name: install yum plugin priorities
   package:
     name: yum-plugin-priorities
+    state: "present"
   register: result
   until: result is succeeded
 
@@ -58,6 +59,16 @@
       until: result is succeeded
       when:
         - samba_server | bool
+
+    - name: install samba-vfs-cephfs
+      package:
+        name: samba-vfs-cephfs
+        state: "{{ (upgrade_samba_packages|bool) | ternary('latest','present') }}"
+      register: result
+      until: result is succeeded
+      when:
+        - samba_server | bool
+        - samba_cephfs_module | bool
 
     - name: install samba-winbind 
       package:

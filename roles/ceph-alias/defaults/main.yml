@@ -1,6 +1,6 @@
 ---
 tools_git_repo: 'https://github.com/45Drives/tools.git'
-tools_install_dir: '/opt/ctools'
+tools_install_dir: '/opt/tools'
 tools_version: '0.1'
 chassis_size: '15'
 hybrid_chassis: 'false'
