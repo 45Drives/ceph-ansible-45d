@@ -12,7 +12,7 @@
   register: result
   until: result is success
 
-- name: install samba
+- name: install tools
   package:
     name: 45drives-tools
     state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
