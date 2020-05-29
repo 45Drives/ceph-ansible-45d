@@ -5,6 +5,30 @@
       shell: net rpc rights grant "Domain Admins" SeDiskOperatorPrivilege -U "{{ active_directory_info.domain_join_user }}"%"{{ active_directory_info.domain_join_password }}"
       run_once: true
 
+    - name: configure_cephfs_backend | Get admin secret
+      command: "ceph auth get-key client.admin"
+      register: command_output_admin
+      delegate_to: "{{ groups[mon_group_name][0] }}"
+      changed_when: false
+
+    - name: configure_cephfs_backend | Set admin secret fact
+      set_fact:
+        cephfs_admin_secret: "{{ command_output_admin.stdout }}"
+
+    - name: configure_cephfs_backend | Ensure cephfs dir exists
+      file:
+        path: "{{ shared_storage_mountpoint }}/fsgw"
+        state: directory
+        mode: 0755
+
+    - name: configure_cephfs_backend | Mount cephfs as admin user 
+      mount:
+        name: "{{ shared_storage_mountpoint }}/fsgw"
+        src: "{{ groups[mon_group_name][0] }}:/fsgw"
+        fstype: "ceph"
+        opts: "name=admin,secret={{ cephfs_admin_secret }},_netdev"
+        state: mounted
+
     - name: configure_shares - Create samba_shares paths and set ownership
       file:
         path: "{{ item.path }}"
@@ -15,14 +39,34 @@
       run_once: true
       with_items:
         - "{{ samba_shares }}"
+      when:
+        - not samba_cephfs_module | bool
 
+    - name: configure_cephfs_backend | Unmount cephfs as admin user 
+      mount:
+        name: "{{ shared_storage_mountpoint }}/root"
+        state: absent 
+
+    # If using vfs_cephfs, use relative paths (i.e just the share name). note subdirs shares should be created manually
+    - name: configure_shares - create shares
+      shell: net conf addshare {{ item.name }} /{{ item.name }} writeable={{ item.writeable[:1] }} guest_ok={{ item.guest_ok[:1] }} "{{ item.comment }}"
+      failed_when: false
+      run_once: true
+      loop: "{{ samba_shares }}"
+      when:
+        - samba_cephfs_module | bool
+    
+    # If using kernel mount cephfs, use full path when creating share
     - name: configure_shares - create shares
       shell: net conf addshare {{ item.name }} {{ item.path }} writeable={{ item.writeable[:1] }} guest_ok={{ item.guest_ok[:1] }} "{{ item.comment }}"
       failed_when: false
       run_once: true
       loop: "{{ samba_shares }}"
+      when:
+        - not samba_cephfs_module | bool
 
   when:
     - windows_acl | bool
     - domain_member | bool
+
 

@@ -60,7 +60,7 @@
   delegate_to: "{{ groups[mon_group_name][0] }}"
   changed_when: false
 
-- name: configure_cephfs_backend | Write samba keyring for rados locking
+- name: configure_cephfs_backend | Write samba keyring
   copy:
     content: "{{ samba_keyring.stdout }}"
     dest: "/etc/ceph/{{cluster}}.client.samba.keyring"
@@ -77,6 +77,8 @@
     group: ceph
     owner: ceph
     mode: 0600
+  when:
+    - not samba_cephfs_module | bool
 
 - name: configure_cephfs_backend | mount {{ shared_storage_mountpoint }}/fsgw
   mount:
@@ -85,3 +87,5 @@
     fstype: "ceph"
     opts: "name=samba,secretfile=/etc/ceph/samba.secret,_netdev,noatime"
     state: mounted
+  when:
+    - not samba_cephfs_module | bool
