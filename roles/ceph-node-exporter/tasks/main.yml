@@ -1,8 +1,8 @@
 ---
 - name: include setup_container.yml
   include_tasks: setup_container.yml
-  when: not bare_metal_metrics | bool
+  when: not rpm_metrics | bool
 
 - name: include setup_rpm.yml
   include_tasks: setup_rpm.yml
-  when: bare_metal_metrics | bool
+  when: rpm_metrics | bool

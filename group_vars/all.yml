@@ -488,7 +488,7 @@ disable_power_saving: true
 #############
 dashboard_enabled: true
 # When true metric stack will be installed via rpm rather than recommended container image
-bare_metal_metrics: false
+rpm_metrics: false
 # When true HAProxy will be installed on the server in the metric group
 dashboard_haproxy: false
 dashboard_haproxy_port: 80

@@ -22,7 +22,7 @@
     dest: "/etc/systemd/system/grafana-server.service"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: start the grafana-server service
   systemd:

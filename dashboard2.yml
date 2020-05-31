@@ -9,7 +9,7 @@
             name: ceph-facts
         - import_role:
             name: ceph-container-engine
-          when: not bare_metal_metrics | bool
+          when: not rpm_metrics | bool
         - import_role:
             name: ceph-node-exporter
       when: dashboard_enabled | bool
