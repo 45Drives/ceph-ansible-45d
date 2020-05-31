@@ -691,6 +691,13 @@ openstack_keys:
 # DASHBOARD #
 #############
 dashboard_enabled: False
+# When true metric stack will be installed via rpm rather than recommended container image
+bare_metal_metrics: false
+# When true HAProxy will be installed on the server in the metric group
+dashboard_haproxy: true
+dashboard_haproxy_port: 80
+dashboard_haproxy_protocol: http
+dashboard_haproxy_cert:
 # Choose http or https
 # For https, you should set dashboard.crt/key and grafana.crt/key
 dashboard_protocol: http

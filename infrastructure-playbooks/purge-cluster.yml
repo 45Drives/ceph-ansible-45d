@@ -100,6 +100,11 @@
       tags:
         - remove_img
       failed_when: false
+    
+    - name: remove node_exporter rpm
+      package:
+        name: node_exporter
+        state: absent
 
 
 - name: purge ceph grafana-server
@@ -165,6 +170,14 @@
         - /etc/prometheus
       failed_when: false
 
+    - name: remove prometheus rpm
+      package:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - prometheus2
+        - alertmanager
+        - grafana
 
 - name: purge ceph mds cluster
 

@@ -248,14 +248,6 @@
     tags: firewall
 
   - block:
-      - name: open grafana port
-        firewalld:
-          port: "3000/tcp"
-          zone: "{{ ceph_dashboard_firewall_zone }}"
-          permanent: true
-          immediate: true
-          state: enabled
-
       - name: open node_exporter port
         firewalld:
           port: "9100/tcp"
@@ -279,40 +271,28 @@
           permanent: true
           immediate: true
           state: enabled
-    when: dashboard_enabled | bool
+    when: 
+      - dashboard_enabled | bool
 
   - block:
       - name: open grafana port
         firewalld:
-          port: "3000/tcp"
+          port: "{{ grafana_port }}/tcp"
           zone: "{{ ceph_dashboard_firewall_zone }}"
           permanent: true
           immediate: true
           state: enabled
 
-      - name: open node_exporter port
+      - name: open prometheus ports
         firewalld:
-          port: "9100/tcp"
+          port: "{{ item }}/tcp"
           zone: "{{ ceph_dashboard_firewall_zone }}"
           permanent: true
           immediate: true
           state: enabled
-
-      - name: open mgr/prometheus port
-        firewalld:
-          port: "9283/tcp"
-          zone: "{{ ceph_dashboard_firewall_zone }}"
-          permanent: true
-          immediate: true
-          state: enabled
-
-      - name: open dashboard port
-        firewalld:
-          port: "{{ dashboard_port }}/tcp"
-          zone: "{{ ceph_dashboard_firewall_zone }}"
-          permanent: true
-          immediate: true
-          state: enabled
+        with_items:
+          - "{{ prometheus_port }}"
+          - "{{ alertmanager_port }}"
       
       - name: open dashboard haproxy port
         firewalld:
@@ -322,7 +302,10 @@
           immediate: true
           state: enabled
         when: dashboard_haproxy | bool
-    when: dashboard_enabled | bool
+    when: 
+      - dashboard_enabled | bool
+      - grafana_server_group_name is defined
+      - grafana_server_group_name in group_names
 
   - name: open haproxy ports
     firewalld:

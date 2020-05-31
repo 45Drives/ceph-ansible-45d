@@ -49,7 +49,7 @@ copy_admin_key: true
 # this option since ceph-disk has a built-in check which looks for empty devices.
 # Thus devices with existing partition tables will not be used.
 #
-osd_auto_discovery: true
+osd_auto_discovery: false
 
 chassis_size: 15
 

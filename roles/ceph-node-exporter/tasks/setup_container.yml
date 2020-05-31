@@ -5,7 +5,7 @@
     dest: "/etc/systemd/system/node_exporter.service"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: add the cfg80211 module
   modprobe:

@@ -1,0 +1,45 @@
+---
+- name: create grafana user
+  user:
+    name: grafana
+    shell: '/bin/false'
+    createhome: false
+    system: true
+
+- name: create /etc/grafana and /var/lib/grafana
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ grafana_uid }}"
+    recurse: true
+  with_items:
+    - /etc/grafana
+    - /var/lib/grafana
+
+- name: 45Drives Repository - Configure 45drives repository
+  yum_repository:
+    name: ceph_45drives
+    description: 45Drives $basearch repo
+    gpgcheck: no
+    enabled: yes
+    state: present
+    baseurl: "{{ ceph_45drives_repo_url }}"
+    file: ceph_45drives
+    priority: "1"
+  register: result
+  until: result is success
+
+- name: install grafana
+  package:
+    name: grafana
+    state: present
+  register: result
+  until: result is succeeded
+  
+- name: start the grafana-server service
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  failed_when: false

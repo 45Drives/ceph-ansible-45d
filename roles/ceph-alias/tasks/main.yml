@@ -15,7 +15,7 @@
 - name: install tools
   package:
     name: 45drives-tools
-    state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
+    state: present
   register: result
   until: result is succeeded
 
@@ -31,14 +31,12 @@
   when: hybrid_chassis | bool
 
 - name: Get drive layout
-  command: sh "{{ tools_install_dir }}"/lsdev -n
+  command: /usr/bin/python3 "{{ tools_install_dir }}"/lsdev -n
   register: drive_layout
   changed_when: false
-  when: not hybrid_chassis | bool
 
 - name: Show drive layout
   debug:
     msg: "{{ drive_layout.stdout_lines }}"
   when: 
    - not drive_layout.failed
-   - not hybrid_chassis | bool

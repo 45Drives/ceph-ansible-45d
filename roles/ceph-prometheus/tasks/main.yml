@@ -27,7 +27,7 @@
     dest: "/etc/prometheus/alerting/ceph_dashboard.yml"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: create alertmanager directories
   file:
@@ -47,3 +47,9 @@
 
 - name: include setup_container.yml
   include_tasks: setup_container.yml
+  when: not bare_metal_metrics | bool
+
+- name: include setup_rpm.yml
+  include_tasks: setup_rpm.yml
+  when: bare_metal_metrics | bool
+
