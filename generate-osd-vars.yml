@@ -9,3 +9,4 @@
          msg: "{{ output.stdout }}"
 
     - local_action: copy content={{ output.stdout }} dest=/usr/share/ceph-ansible/host_vars/{{ ansible_hostname }}.yml
+      when: not output.failed

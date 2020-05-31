@@ -1,4 +1,19 @@
 ---
+- hosts: all
+  become: true
+  tasks:
+    - block:
+        - import_role:
+            name: ceph-defaults
+        - import_role:
+            name: ceph-facts
+        - import_role:
+            name: ceph-container-engine
+          when: not bare_metal_metrics | bool
+        - import_role:
+            name: ceph-node-exporter
+      when: dashboard_enabled | bool
+
 - hosts:
   - '{{ groups["metrics"][0] | default(groups["mgrs"][0]) | default(groups["mons"][0]) | default(omit) }}'
 
@@ -57,45 +72,17 @@
         name: ceph-infra
     - import_role:
         name: ceph-common
-
-- hosts: all
-  become: true
-  tasks:
-    - block:
-        - import_role:
-            name: ceph-defaults
-        - import_role:
-            name: ceph-facts
-        - import_role:
-            name: ceph-container-engine
-          when: not bare_metal_metrics | bool
-        - import_role:
-            name: ceph-node-exporter
-      when: dashboard_enabled | bool
-
-- hosts: '{{ groups["metrics"][0] | default(omit) }}'
-  become: true
-  tasks:
-    - block:
-        - import_role:
-            name: ceph-defaults
-          tags: ['ceph_update_config']
-        - import_role:
-            name: ceph-facts
-          tags: ['ceph_update_config']
-        - import_role:
-            name: ceph-prometheus
-        - import_role:
-            name: ceph-grafana
-        - name: install ceph-grafana-dashboards package on RedHat or SUSE
-          package:
-            name: ceph-grafana-dashboards
-            state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
-          register: result
-          until: result is succeeded
-          when:
-            - ansible_os_family in ['RedHat', 'Suse']
-        - import_role:
-            name: ceph-dashboard
-      when: dashboard_enabled | bool
-
+    - import_role:
+        name: ceph-prometheus
+    - import_role:
+        name: ceph-grafana
+    - name: install ceph-grafana-dashboards package on RedHat or SUSE
+      package:
+        name: ceph-grafana-dashboards
+        state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
+      register: result
+      until: result is succeeded
+      when:
+        - ansible_os_family in ['RedHat', 'Suse']
+    - import_role:
+        name: ceph-dashboard

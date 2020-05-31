@@ -432,8 +432,8 @@ radosgw_frontend_ssl_certificate:
 #     rgw_zone: zone1
 #
 #ceph_conf_overrides: {}
-ceph_conf_overrides:
-   global:
+#ceph_conf_overrides:
+#   global:
 #     rgw_enable_usage_log: true
 
 
@@ -490,7 +490,7 @@ dashboard_enabled: true
 # When true metric stack will be installed via rpm rather than recommended container image
 bare_metal_metrics: false
 # When true HAProxy will be installed on the server in the metric group
-dashboard_haproxy: true
+dashboard_haproxy: false
 dashboard_haproxy_port: 80
 dashboard_haproxy_protocol: http
 dashboard_haproxy_cert:

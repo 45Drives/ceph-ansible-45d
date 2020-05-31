@@ -35,6 +35,15 @@
     state: present
   register: result
   until: result is succeeded
+
+- name: Install grafana plugins
+  grafana_plugin:
+    name: "{{ item }}"
+    version: latest
+    state: present
+  with_items:
+    - vonage-status-panel
+    - grafana-piechart-panel
   
 - name: start the grafana-server service
   systemd:
@@ -43,3 +52,4 @@
     enabled: yes
     daemon_reload: yes
   failed_when: false
+

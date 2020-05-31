@@ -83,7 +83,7 @@ hybrid_chassis: false
 #   - data: /dev/sda
 #   - data: /dev/sdb1
 
-lvm_volumes:
+#lvm_volumes:
 #  - data: /dev/1-1
 #  - data: /dev/1-2
 #  - data: /dev/1-3
