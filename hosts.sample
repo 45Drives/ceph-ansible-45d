@@ -2,42 +2,32 @@
 osd1
 osd2
 osd3
-osd4
-osd5
-osd6
 
 [mgrs]
 osd1
 osd2
 osd3
-osd4
-osd5
-osd6
 
 [osds]
 osd1
 osd2
 osd3
-osd4
-osd5
-osd6
 
-[rgws]
-rgw3 radosgw_address=192.168.101.30
-rgw5 radosgw_address=192.168.101.33
-rgw6 radosgw_address=192.168.101.34
+#[metrics]
 
-[clients]
-admin
-#fsgw1
+#[mdss]
 
-[dashboards]
-metric
+#[rgws]
+#rgw3 radosgw_address=192.168.101.30
 
-[nodes]
-osd1
-osd2
-osd3
-osd4
-osd5
-osd6
+#[clients]
+
+#[rgwloadbalancers]
+
+#[iscsigws]
+
+#[nfss]
+
+#[smbs]
+
+#[rbdmirrors]

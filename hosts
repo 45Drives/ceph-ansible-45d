@@ -1,23 +1,33 @@
 [mons]
-vmon1
-vmon2
-vmon3
+osd1
+osd2
+osd3
 
 [mgrs]
-vmon1
-vmon2
-vmon3
+osd1
+osd2
+osd3
 
 [osds]
-vosd1
-vosd2
-vosd3
+osd1
+osd2
+osd3
 
-[mdss]
-vmds1
+#[metrics]
 
-[metrics]
-vmetric1
+#[mdss]
 
-[smbs]
-vsmb1
+#[rgws]
+#rgw3 radosgw_address=192.168.101.30
+
+#[clients]
+
+#[rgwloadbalancers]
+
+#[iscsigws]
+
+#[nfss]
+
+#[smbs]
+
+#[rbdmirrors]
