@@ -1,4 +1,7 @@
 ---
+- name: Import generate-osd-vars playbook
+  import_playbook: generate-osd-vars.yaml
+
 - hosts: osds
   tasks:
     - import_role:
