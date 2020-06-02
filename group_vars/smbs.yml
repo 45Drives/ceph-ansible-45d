@@ -48,6 +48,7 @@ active_directory_info:
   # Use ansible vault to create encrypted varible "domain_password"
   # domain_join_password: '{{ domain_password }}'
   domain_join_password: ''
+  ad_admin_group: "Domain Admins"
 
 # Samba Share (SMB) Definitions
 configure_shares: true

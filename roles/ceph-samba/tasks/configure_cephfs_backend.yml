@@ -11,13 +11,13 @@
 
 - name: configure_cephfs_backend | Ensure cephfs dir exists
   file:
-    path: "{{ shared_storage_mountpoint }}/root"
+    path: "{{ shared_storage_mountpoint }}/"
     state: directory
     mode: 0755
 
 - name: configure_cephfs_backend | Mount cephfs as admin user 
   mount:
-    name: "{{ shared_storage_mountpoint }}/root"
+    name: "{{ shared_storage_mountpoint }}/"
     src: "{{ groups[mon_group_name][0] }}:/"
     fstype: "ceph"
     opts: "name=admin,secret={{ cephfs_admin_secret }},_netdev"
@@ -25,7 +25,7 @@
 
 - name: configure_cephfs_backend | Create directory for data
   file:
-    path: "{{ shared_storage_mountpoint }}/root/fsgw"
+    path: "{{ shared_storage_mountpoint }}/fsgw"
     state: directory
     mode: 0755
 
@@ -77,8 +77,6 @@
     group: ceph
     owner: ceph
     mode: 0600
-  when:
-    - not samba_cephfs_module | bool
 
 - name: configure_cephfs_backend | mount {{ shared_storage_mountpoint }}/fsgw
   mount:
@@ -87,5 +85,3 @@
     fstype: "ceph"
     opts: "name=samba,secretfile=/etc/ceph/samba.secret,_netdev,noatime"
     state: mounted
-  when:
-    - not samba_cephfs_module | bool
