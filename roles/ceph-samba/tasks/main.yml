@@ -41,3 +41,14 @@
     shares
   when:
     - configure_shares | bool
+
+- name: configure_shares - Unmount cephfs
+  mount:
+    name: "{{ shared_storage_mountpoint }}/fsgw"
+    state: absent
+  when:
+    - not configure_shares | bool 
+
+- include: show_ctdb_status.yml
+  when:
+    - samba_cluster | bool

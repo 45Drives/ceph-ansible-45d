@@ -14,6 +14,14 @@
 
   pre_tasks:
 
+    - name: set ceph client install 'In Progress'
+      run_once: true
+      set_stats:
+        data:
+          installer_phase_ceph_client:
+            status: "In Progress"
+            start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
+
     - import_tasks: raw_install_python.yml
 
     - name: gather facts
@@ -60,34 +68,8 @@
         name: ceph-validate
     - import_role:
         name: ceph-infra
-
-- hosts: smbs
-  gather_facts: false
-  become: True
-  any_errors_fatal: true
-  pre_tasks:
-    - name: set ceph client install 'In Progress'
-      run_once: true
-      set_stats:
-        data:
-          installer_phase_ceph_client:
-            status: "In Progress"
-            start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
-
-  tasks:
-    - import_role:
-        name: ceph-defaults
-      tags: ['ceph_update_config']
-    - import_role:
-        name: ceph-facts
-      tags: ['ceph_update_config']
-    - import_role:
-        name: ceph-handler
     - import_role:
         name: ceph-common
-    - import_role:
-        name: ceph-config
-      tags: ['ceph_update_config']
     - import_role:
         name: ceph-samba
 
@@ -100,27 +82,3 @@
             status: "Complete"
             end: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
 
-- hosts: smbs
-  gather_facts: false
-  become: True
-  any_errors_fatal: true
-  tasks:
-    - import_role:
-        name: ceph-defaults
-    - name: wait for CTDB to go healthy
-      run_once: true
-      wait_for:
-        delay: 30  #we wait enough time for ctdb to recover and start hosting VIP
-        timeout: 0
-    - name: get ctdb status from the first node
-      command: ctdb status
-      register: ctdb_status
-      changed_when: false
-      delegate_to: "{{ groups[smb_group_name][0] }}"
-      run_once: true
-    - name: "show ctdb status for cluster {{ cluster }}"
-      debug:
-        msg: "{{ ctdb_status.stdout_lines }}"
-      delegate_to: "{{ groups[smb_group_name][0] }}"
-      run_once: true
-      when: not ctdb_status.failed

@@ -31,7 +31,7 @@
 
 - name: configure_cephfs_backend | Unmount cephfs as admin user 
   mount:
-    name: "{{ shared_storage_mountpoint }}/root"
+    name: "{{ shared_storage_mountpoint }}/"
     state: absent 
 
 - name: configure_cephfs_backend | Create samba cephx user
@@ -67,7 +67,7 @@
     force: yes
     group: ceph
     owner: ceph
-    mode: 0600
+    mode: "0600"
 
 - name: configure_cephfs_backend | write ceph samba client secret
   copy:
@@ -76,7 +76,7 @@
     force: yes
     group: ceph
     owner: ceph
-    mode: 0600
+    mode: "0600"
 
 - name: configure_cephfs_backend | mount {{ shared_storage_mountpoint }}/fsgw
   mount:
@@ -85,3 +85,4 @@
     fstype: "ceph"
     opts: "name=samba,secretfile=/etc/ceph/samba.secret,_netdev,noatime"
     state: mounted
+
