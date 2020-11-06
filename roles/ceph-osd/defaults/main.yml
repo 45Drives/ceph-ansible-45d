@@ -33,6 +33,10 @@ copy_admin_key: false
 
 devices: []
 
+dedicated_devices: []
+
+bluestore_wal_devices: []
+
 
 #'osd_auto_discovery'  mode prevents you from filling out the 'devices' variable above.
 # Device discovery is based on the Ansible fact 'ansible_devices'
