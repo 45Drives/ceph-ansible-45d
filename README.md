@@ -1,3 +1,5 @@
+# THIS REPO IS NO LONGER MAINTAINED
+# FOR OCTOPUS OR HIGHER SUPPORT SEE HERE INSTEAD https://github.com/45Drives/ceph-ansible
 # ceph-ansible-45d
 
 - Chassis supported:
